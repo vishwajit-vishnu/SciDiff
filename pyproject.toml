@@ -1,0 +1,180 @@
+[build-system]
+requires = ["hatchling>=1.25", "hatch-vcs>=0.4"]
+build-backend = "hatchling.build"
+
+[project]
+name = "scidiff"
+dynamic = ["version"]
+description = "SciDiff – Multi-backend Scientific Machine Learning (PINNs & more) with PyTorch, JAX and Julia"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [
+    { name = "vishwajit kumar vishnu", email = "vishwajitvishnu@gmail.com" },
+]
+maintainers = [
+    { name = "vishwajit Kumar vishnu", email = "vishwajitvishnu@gmail.com" },
+]
+keywords = [
+    "scidiff",
+    "sciml",
+    "pinn",
+    "physics-informed",
+    "neural-network",
+    "pytorch",
+    "jax",
+    "julia",
+    "scientific-machine-learning",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Typing :: Typed",
+]
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "typing-extensions>=4.5; python_version < '3.11'",
+]
+
+[project.optional-dependencies]
+torch = [
+    "torch>=2.1",
+]
+jax = [
+    "jax>=0.4.26",
+    "jaxlib>=0.4.26",
+    "equinox>=0.11",
+    "optax>=0.2",
+]
+julia = [
+    "juliacall>=0.9.20",
+]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.6",
+    "mypy>=1.11",
+    "pre-commit>=3.7",
+    "coverage[toml]>=7.5",
+]
+docs = [
+    "mkdocs-material>=9.5",
+    "mkdocstrings[python]>=0.25",
+    "mkdocs-gen-files",
+    "mkdocs-literate-nav",
+]
+all = [
+    "scidiff[torch,jax,julia]",
+]
+
+[project.urls]
+Homepage = "https://github.com/vishwajit-vishnu/SciDiff"
+Documentation = "https://yourorg.github.io/SciDiff"
+Repository = "https://github.com/vishwajit-vishnu/SciDiff"
+Issues = "https://github.com/vishwajit-vishnu/SciDiff/issues"
+Changelog = "https://github.com/vishwajit-vishnu/SciDiff/blob/main/CHANGELOG.md"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.version.raw-options]
+# Prefer tags like v0.1.0 or 0.1.0
+local_scheme = "no-local-version"
+
+[tool.hatch.build.hooks.vcs]
+# Automatically write the version into the package so `scidiff.__version__` works
+version-file = "src/scidiff/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/scidiff"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/tests",
+    "/docs",
+    "/examples",
+    "/LICENSE",
+    "/README.md",
+    "/CHANGELOG.md",
+    "/pyproject.toml",
+]
+
+# ---------- Tool configuration ----------
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["scidiff"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+show_error_codes = true
+files = ["src/scidiff"]
+
+[[tool.mypy.overrides]]
+module = [
+    "jax.*",
+    "jaxlib.*",
+    "equinox.*",
+    "optax.*",
+    "torch.*",
+    "juliacall.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+]
+testpaths = ["tests"]
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning",
+]
+
+[tool.coverage.run]
+source = ["scidiff"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
